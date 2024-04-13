@@ -9,13 +9,13 @@ HTTPのテストサーバー
 #### amd64
 
 ```
-wget https://
+wget https://github.com/akimoze/http-test/releases/download/v806ffdf/test-http-linux-amd64
 ```
 
 #### arm64
 
 ```
-wget https://
+wget https://github.com/akimoze/http-test/releases/download/v806ffdf/test-http-linux-arm64
 ```
 
 ### mac
@@ -23,7 +23,7 @@ wget https://
 #### arm64
 
 ```
-wget https://
+wget https://github.com/akimoze/http-test/releases/download/v806ffdf/test-http-darwin-arm64
 ```
 
 ## 設定ファイル

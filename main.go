@@ -11,7 +11,6 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
 )
 
 type Config struct {
@@ -34,8 +33,8 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.RequestID())
 	e.Use(middleware.Recover())
+	e.HTTPErrorHandler = customHTTPErrorHandler
 	e.GET("/", func(e echo.Context) error {
-		log.Info("あちほい")
 		response := map[string]string{
 			"ip":   e.RealIP(),
 			"date": time.Now().Format("2006-01-02 15:04:05"),
@@ -67,5 +66,22 @@ func main() {
 	defer cancel()
 	if err := e.Shutdown(ctx); err != nil {
 		e.Logger.Fatal(err)
+	}
+}
+
+func customHTTPErrorHandler(err error, c echo.Context) {
+	response := map[string]string{
+		"ip":      c.RealIP(),
+		"date":    time.Now().Format("2006-01-02 15:04:05"),
+		"utc":     time.Now().UTC().Format("2006-01-02 15:04:05"),
+		"message": err.Error(),
+	}
+	code := http.StatusInternalServerError
+	if he, ok := err.(*echo.HTTPError); ok {
+		code = he.Code
+	}
+	c.Logger().Error(err)
+	if err := c.JSON(code, response); err != nil {
+		c.Logger().Error(err)
 	}
 }
